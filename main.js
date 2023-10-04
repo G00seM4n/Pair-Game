@@ -77,11 +77,26 @@ class PairGame extends HelpersPairGame {
 	// Рендер карточек
 	renderCards(cardCount) {
 		const cardsWrap = document.createElement('div');
+		const timerWrap = document.createElement('div');
+
 		const nums = super.shuffle(super.createNumbersArray(cardCount));
 		let currentArr = [];
 
 		cardsWrap.classList.add('wrap');
 		cardsWrap.style.gridTemplateColumns = `repeat(${Math.ceil(Math.sqrt(nums.length))}, 1fr)`;
+		timerWrap.classList.add('timer');
+
+		let seconds = 60;
+		timerWrap.textContent = `Осталось ${seconds} секунд`;
+		const timerInterval = setInterval(() => {
+			timerWrap.textContent = `Осталось ${seconds -= 1} секунд`;
+
+			if (seconds === 0) {
+				clearInterval(timerInterval);
+				this.selector.removeChild(cardsWrap);
+				this.selector.append(this.createElementResult(false));
+			};
+		}, 1000);
 
 		nums.forEach((num, id) => {
 			const item = this.createCardElement(num);
@@ -116,23 +131,25 @@ class PairGame extends HelpersPairGame {
 
 				if (this.isEndGame(cardsWrap, '.item')) {
 					this.selector.removeChild(cardsWrap);
-					this.selector.append(this.createElementResult());
+					this.selector.append(this.createElementResult(true));
 				}
 			});
 
+			cardsWrap.append(timerWrap);
 			cardsWrap.append(item);
 		});
 
 		return cardsWrap;
 	}
 	// Модальное окно с результатом
-	createElementResult() {
+	createElementResult(bool) {
 		const modal = document.createElement('div');
 		const modalTitle = document.createElement('h1');
 		const restart = document.createElement('button');
 
 		restart.textContent = 'Начать заново';
-		modalTitle.textContent = 'Вы победили! (´• ω •`)';
+
+		bool ? modalTitle.textContent = 'Вы победили! (´• ω •`)' : modalTitle.textContent = 'Вы проиграли. (｡•́︿•̀｡)'
 
 		restart.onclick = () => {
 			this.selector.removeChild(modal);

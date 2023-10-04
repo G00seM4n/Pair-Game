@@ -25,6 +25,7 @@ body {
 }
 
 .wrap {
+	position: relative;
 	display: grid;
 	gap: 4px;
 }
@@ -96,4 +97,13 @@ select {
 option {
 	background-color: var(--red);
 	text-align: center;
+}
+
+.timer {
+	position: absolute;
+	top: -40px;
+	left: 50%;
+	transform: translateX(-50%);
+
+	white-space: nowrap;
 }
